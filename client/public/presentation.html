@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DentalHub Roadmap - Interactive Presentation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #f8fafc 50%, #f0fdf4 100%);
+            color: #1f2937;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Animated background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(13, 148, 136, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #06b6d4 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            margin-bottom: 60px;
+            box-shadow: 0 20px 50px rgba(13, 148, 136, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="white" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.5;
+        }
+
+        header .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        header p {
+            font-size: 1.3rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            opacity: 0.95;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin-bottom: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: #0d9488;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #f59e0b;
+            transition: width 0.3s;
+        }
+
+        nav a:hover {
+            color: #f59e0b;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Sections */
+        section {
+            margin-bottom: 80px;
+        }
+
+        section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: #0d9488;
+            text-align: center;
+            position: relative;
+            padding-bottom: 20px;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #0d9488, #f59e0b);
+            border-radius: 2px;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
+        }
+
+        /* Phase Cards Grid */
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .phase-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            border-left: 6px solid #0d9488;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .phase-card:nth-child(2) {
+            border-left-color: #14b8a6;
+        }
+
+        .phase-card:nth-child(3) {
+            border-left-color: #2dd4bf;
+        }
+
+        .phase-card:nth-child(4) {
+            border-left-color: #f59e0b;
+        }
+
+        .phase-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 40px rgba(13, 148, 136, 0.2);
+        }
+
+        .phase-number {
+            display: inline-block;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #0d9488, #14b8a6);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 45px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .phase-card:nth-child(2) .phase-number {
+            background: linear-gradient(135deg, #14b8a6, #2dd4bf);
+        }
+
+        .phase-card:nth-child(3) .phase-number {
+            background: linear-gradient(135deg, #2dd4bf, #06b6d4);
+        }
+
+        .phase-card:nth-child(4) .phase-number {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+        }
+
+        .phase-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #1f2937;
+        }
+
+        .phase-subtitle {
+            color: #0d9488;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .phase-card p {
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            margin-bottom: 60px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* Charts Container */
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .chart-wrapper {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-wrapper h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #1f2937;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(180deg, #0d9488, #f59e0b);
+            box-shadow: 0 0 20px rgba(13, 148, 136, 0.3);
+        }
+
+        .timeline-item {
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            margin-left: 0;
+            margin-right: 52%;
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            margin-left: 52%;
+            margin-right: 0;
+            text-align: left;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background: #0d9488;
+            border: 4px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px #0d9488, 0 4px 12px rgba(13, 148, 136, 0.3);
+        }
+
+        .timeline-content h4 {
+            color: #0d9488;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .timeline-content p {
+            color: #6b7280;
+        }
+
+        /* Value Proposition */
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 60px;
+        }
+
+        .value-prop {
+            background: linear-gradient(135deg, rgba(13, 148, 136, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid #0d9488;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(10px);
+        }
+
+        .value-prop h4 {
+            color: #0d9488;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .value-prop p {
+            color: #6b7280;
+            font-size: 0.95rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #06b6d4 100%);
+            color: white;
+            padding: 80px 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(13, 148, 136, 0.3);
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .cta-section .container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            color: white;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-section h2::after {
+            background: rgba(255, 255, 255, 0.4);
+            box-shadow: none;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            padding: 15px 50px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1f2937, #111827);
+            color: #d1d5db;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        footer p {
+            opacity: 0.9;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+
+            header {
+                padding: 60px 20px;
+            }
+
+            nav ul {
+                gap: 15px;
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                margin-left: 60px;
+                margin-right: 0;
+                text-align: left;
+            }
+
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+
+            section h2 {
+                font-size: 1.8rem;
+            }
+
+            .cta-section {
+                padding: 60px 30px;
+            }
+
+            .cta-section h2 {
+                font-size: 2rem;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            nav {
+                display: none;
+            }
+
+            .cta-button {
+                color: #0d9488;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .phase-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .phase-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .phase-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .phase-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>DentalHub Strategy</h1>
+            <p>Connecting Patients, Empowering Doctors via AI</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#phases">Phases</a></li>
+                <li><a href="#comparison">Comparison</a></li>
+                <li><a href="#metrics">Metrics</a></li>
+                <li><a href="#timeline">Timeline</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Overview Section -->
+        <section id="overview">
+            <h2>Project Overview</h2>
+            <div class="value-props">
+                <div class="value-prop">
+                    <h4>🎯 Market Opportunity</h4>
+                    <p>Building a two-sided marketplace connecting patients with trusted dental clinics, powered by AI diagnostics and smart scheduling.</p>
+                </div>
+                <div class="value-prop">
+                    <h4>💡 Innovation Path</h4>
+                    <p>Evolution from simple clinic aggregator to AI-powered ecosystem with voice recognition, automated diagnostics, and patient retention tools.</p>
+                </div>
+                <div class="value-prop">
+                    <h4>📈 Growth Strategy</h4>
+                    <p>Four-phase approach: Market Entry → Patient Tech → Ecosystem → Innovation, each building on previous capabilities.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phases Section -->
+        <section id="phases">
+            <h2>Product Phases</h2>
+            <div class="phases-grid">
+                <div class="phase-card">
+                    <div class="phase-number">1</div>
+                    <h3>Market Entry</h3>
+                    <div class="phase-subtitle">MVP</div>
+                    <p>Agile clinic aggregator with geo-search, Google Reviews integration, and basic clinic management dashboard. Establishes trust through verified reviews and enables quick discovery of nearby dentists.</p>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-number">2</div>
+                    <h3>Patient Tech</h3>
+                    <div class="phase-subtitle">Smart Diagnostics</div>
+                    <p>AI-powered photo diagnostics with price estimation calculator. Reduces patient anxiety about costs and unknowns through intelligent pre-diagnosis and transparent pricing guidance.</p>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-number">3</div>
+                    <h3>Ecosystem</h3>
+                    <div class="phase-subtitle">Retention</div>
+                    <p>Digital patient records, smart booking calendar, and recall system. Increases lifetime value through seamless continuity of care and automated appointment reminders.</p>
+                </div>
+                <div class="phase-card">
+                    <div class="phase-number">4</div>
+                    <h3>Innovation</h3>
+                    <div class="phase-subtitle">Doctor's Voice AI</div>
+                    <p>Voice recognition system for real-time medical record filling. Reduces appointment time by 30% and eliminates administrative burden on doctors.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Comparison Table -->
+        <section id="comparison">
+            <h2>Phase Comparison</h2>
+            <div class="comparison-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Phase</th>
+                            <th>Key Features</th>
+                            <th>Target User</th>
+                            <th>Business Value</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Market Entry</strong></td>
+                            <td>Geo-search, Reviews, Admin Panel</td>
+                            <td>Patients seeking verified clinics</td>
+                            <td>Trust & Discovery</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Patient Tech</strong></td>
+                            <td>Photo AI, Price Calculator, Tutorial</td>
+                            <td>Cost-conscious patients</td>
+                            <td>Confidence & Transparency</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Ecosystem</strong></td>
+                            <td>Digital Records, Smart Booking, Recall</td>
+                            <td>Returning patients</td>
+                            <td>LTV & Retention</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Innovation</strong></td>
+                            <td>Voice Recognition, Speech-to-Text</td>
+                            <td>Doctors & Clinics</td>
+                            <td>Efficiency & Automation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Metrics Section -->
+        <section id="metrics">
+            <h2>Growth Metrics</h2>
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <h3>Feature Complexity Growth</h3>
+                    <canvas id="complexityChart"></canvas>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>User Value Delivery</h3>
+                    <canvas id="valueChart"></canvas>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>Implementation Timeline</h3>
+                    <canvas id="timelineChart"></canvas>
+                </div>
+                <div class="chart-wrapper">
+                    <h3>Revenue Potential by Phase</h3>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline Section -->
+        <section id="timeline">
+            <h2>Implementation Timeline</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Phase 1: Market Entry</h4>
+                        <p><strong>Duration:</strong> 3-4 months</p>
+                        <p>Build MVP with clinic aggregation, geo-search, and review integration. Establish market presence and initial user base.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Phase 2: Patient Tech</h4>
+                        <p><strong>Duration:</strong> 4-5 months</p>
+                        <p>Integrate AI diagnostics, implement photo upload with tutorial, develop price estimation algorithm.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Phase 3: Ecosystem</h4>
+                        <p><strong>Duration:</strong> 5-6 months</p>
+                        <p>Build digital patient records, implement smart booking calendar, launch recall notification system.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h4>Phase 4: Innovation</h4>
+                        <p><strong>Duration:</strong> 4-5 months</p>
+                        <p>Develop voice recognition system, integrate speech-to-text, automate medical record filling.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <h2>Ready to Transform Dental Healthcare?</h2>
+                <p>Join us on this journey to connect patients with trusted doctors, powered by AI.</p>
+                <button class="cta-button" onclick="alert('Contact form coming soon!')">Get in Touch</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 DentalHub. Connecting Patients, Empowering Doctors via AI.</p>
+    </footer>
+
+    <script>
+        // Chart 1: Feature Complexity
+        const complexityCtx = document.getElementById('complexityChart').getContext('2d');
+        new Chart(complexityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
+                datasets: [{
+                    label: 'Feature Complexity',
+                    data: [3, 6, 8, 10],
+                    backgroundColor: ['#0d9488', '#14b8a6', '#2dd4bf', '#f59e0b'],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 12,
+                        ticks: { color: '#6b7280' },
+                        grid: { color: '#e5e7eb' }
+                    },
+                    x: {
+                        ticks: { color: '#6b7280' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: User Value Delivery
+        const valueCtx = document.getElementById('valueChart').getContext('2d');
+        new Chart(valueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
+                datasets: [{
+                    label: 'User Value Score',
+                    data: [6, 8, 9, 10],
+                    borderColor: '#0d9488',
+                    backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointBackgroundColor: '#0d9488',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 12,
+                        ticks: { color: '#6b7280' },
+                        grid: { color: '#e5e7eb' }
+                    },
+                    x: {
+                        ticks: { color: '#6b7280' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 3: Timeline
+        const timelineCtx = document.getElementById('timelineChart').getContext('2d');
+        new Chart(timelineCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
+                datasets: [{
+                    label: 'Months',
+                    data: [3.5, 4.5, 5.5, 4.5],
+                    backgroundColor: ['#0d9488', '#14b8a6', '#2dd4bf', '#f59e0b'],
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 8,
+                        ticks: { color: '#6b7280' },
+                        grid: { color: '#e5e7eb' }
+                    },
+                    x: {
+                        ticks: { color: '#6b7280' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 4: Revenue Potential
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Phase 1', 'Phase 2', 'Phase 3', 'Phase 4'],
+                datasets: [{
+                    data: [20, 25, 30, 25],
+                    backgroundColor: ['#0d9488', '#14b8a6', '#2dd4bf', '#f59e0b'],
+                    borderColor: '#fff',
+                    borderWidth: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#6b7280' }
+                    }
+                }
+            }
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
