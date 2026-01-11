@@ -1,12 +1,15 @@
 import path from "path"
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    tailwindcss() // <--- Вот это вернет дизайн!
+  ],
   resolve: {
     alias: {
-      // Было "./src", меняем на "./client/src", так как папка src внутри client
       "@": path.resolve(__dirname, "./client/src"),
     },
   },
