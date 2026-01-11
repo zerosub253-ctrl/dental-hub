@@ -6,7 +6,8 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      // Было "./src", меняем на "./client/src", так как папка src внутри client
+      "@": path.resolve(__dirname, "./client/src"),
     },
   },
   build: {
